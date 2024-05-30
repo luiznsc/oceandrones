@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Home from './componentes/home/home';
 import Login from './componentes/login/login';
+import Cadastro from './componentes/cadastro/cadastro';
 
 
 export default function App() {
@@ -22,6 +23,10 @@ export default function App() {
 
           <Route path='/login' element={<>
             <Login />
+          </>} />
+
+          <Route path='/cadastro' element={<>
+            <Cadastro />
           </>} />
 
         </Routes>
