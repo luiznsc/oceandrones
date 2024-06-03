@@ -18,3 +18,7 @@ Global Solution
 > - App: React Native
 > - Back-End: Java com Spring
 > - Database: Azure Database (Nuvem)
+> - >
+#### LINKS:
+> - Site: https://oceandrones.vercel.app/
+> - Back-End: [Repositório API back-end](https://github.com/luiznsc/oceandrones_api_web_spring)
