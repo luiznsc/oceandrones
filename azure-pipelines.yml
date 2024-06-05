@@ -12,10 +12,10 @@ variables:
   azureSubscription: '446feb73-3e5a-486b-b8c0-381cad651f6e'
 
   # Web app name
-  webAppName: 'oceandrones-webapp'
+  webAppName: 'oceadrones-web-app'
 
   # Environment name
-  environmentName: 'oceandrones-webapp'
+  environmentName: 'oceadrones-web-app'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -57,7 +57,7 @@ stages:
         deploy:
           steps:
           - task: AzureRmWebAppDeployment@4
-            displayName: 'Azure App Service Deploy: oceandrones-webapp'
+            displayName: 'Azure App Service Deploy: oceadrones-web-app'
             inputs:
               azureSubscription: $(azureSubscription)
               appType: webAppLinux
