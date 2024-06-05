@@ -57,12 +57,12 @@ stages:
         deploy:
           steps:
           - task: AzureRmWebAppDeployment@4
-            displayName: 'Azure App Service Deploy: oceadrones-web-app'
             inputs:
-              azureSubscription: $(azureSubscription)
-              appType: webAppLinux
-              WebAppName: $(webAppName)
-              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Azure for Students(a333be56-9cbd-4f85-955f-033ae5183aa9)'
+              appType: 'webApp'
+              WebAppName: 'oceadrones-web-app'
+              packageForLinux: '$(System.DefaultWorkingDirectory)/**/app'
               RuntimeStack: 'NODE|10.10'
               StartupCommand: 'npm run start'
               ScriptType: 'Inline Script'
