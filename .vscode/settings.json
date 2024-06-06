@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/a333be56-9cbd-4f85-955f-033ae5183aa9/resourceGroups/gp_oceandrones_gs/providers/Microsoft.Web/sites/oceandrones-reactapp",
+    "appService.deploySubpath": "build"
+}

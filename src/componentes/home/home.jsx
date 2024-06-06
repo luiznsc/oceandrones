@@ -36,10 +36,10 @@ export default function Home() {
                 {/* <!-- BTN --> */} 
                 <div className="space-x-4">
                     <a href="/login" className="inline-block rounded-md bg-blue-600 px-8 py-3 text-md font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
-                        Começar
+                        Logar
                     </a>
-                    <a href="/quemsomos" className="inline-block rounded-md border border-transparent bg-white px-8 py-3 text-md font-semibold text-blue-600 shadow-sm hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
-                        Saiba mais
+                    <a href="/cadastro" className="inline-block rounded-md border border-transparent bg-white px-8 py-3 text-md font-semibold text-blue-600 shadow-sm hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                        Cadastrar
                     </a>
                 </div>
             </div>

@@ -33,7 +33,7 @@ const Login = () => {
             await schema.validate({ email, password }, { abortEarly: false });
     
             const situacaoEmpresa = 'ATIVA';
-            const response = await axios.get('http://localhost:8080/empresas/buscar', {
+            const response = await axios.get('http://localhost:8080/usuarios/buscar', {
                 params: { email, password, situacaoEmpresa },
             });
 
@@ -41,7 +41,7 @@ const Login = () => {
             if (empresa && empresa.situacaoEmpresa === 'ATIVA') {
                 toast.success('Login realizado com sucesso!');
                 setTimeout(() => {
-                    navigate('/teste');
+                    navigate('/home');
                 }, 2000);
             } else {
                 toast.error('Empresa Inativa.');
