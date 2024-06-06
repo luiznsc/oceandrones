@@ -5,23 +5,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from '../header/header';
+import Popup from 'reactjs-popup';
+import {FaCheck} from 'react-icons/fa';
+
 
 export default function Cadastro() {
 
-    const exibeMensagemSucesso = () => {
-        toast.success('Cadastro realizado com sucesso!',{
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    }
-
-
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
 
     const [nomeUsuario, setnomeUsuario] = useState('');
     const [sobrenomeUsuario, setsobrenomeUsuario] = useState('');
@@ -29,53 +20,88 @@ export default function Cadastro() {
     const [telUsuario, settelUsuario] = useState('');
     const [emailUsuario, setemailUsuario] = useState('');
     const [senhaUsuario, setsenhaUsuario] = useState('');
-    const [confirmSenhaUsuario, setconfirmSenhaUsuario] = useState('');
+
+    const [errorNome, setErrorNome] = useState('');
+    const [errorSobrenome, setErrorSobrenome] = useState('');
+    const [errorCpf, setErrorCpf] = useState('');
+    const [errorTel, setErrorTel] = useState('');
+    const [errorEmail, setErrorEmail] = useState('');
+    const [errorSenha, setErrorSenha] = useState('');
 
 
     const schema = Yup.object().shape({
         nomeUsuario: Yup.string().required('Nome do usuário é obrigatório'),
         sobrenomeUsuario: Yup.string().required('Sobrenome do usuário é obrigatório'),
-        cpfUsuario: Yup.string().required('CNPJ da empresa é obrigatório').max(14)
-            .matches(/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/, 'CPF inválido. Formato esperado: XXx.XXX.XXX-XX'),
+        cpfUsuario: Yup.string().required('CPF do usuário é obrigatório.').max(14)
+            .matches(/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/, 'CPF inválido.'),
         telUsuario: Yup.string().required('Telefone da empresa é obrigatório')
-            .matches(/^(\(?\d{2}\)?\s?)?\d{4,5}\-\d{4}$/, 'Número telefon/celular inválido. Formato esperado: (XX) XXXX-XXXX ou XXXXX-XXXX'),
+            .matches(/^(\(?\d{2}\)?\s?)?\d{4,5}\-\d{4}$/, 'Número telefone/celular inválido.'),
         emailUsuario: Yup.string().email('E-mail inválido').required('E-mail é obrigatório')
             .matches(/^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/, 'E-mail inválido'),
         senhaUsuario: Yup.string().required("Preencha o campo senha")
                     .min(8, 'A senha deve ter no mínimo 8 caracteres')
-                    .max(8, 'A senha deve ter no máximo 8 caracteres')
-                    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'A senha deve conter pelo menos um caractere especial, uma letra maiúscula e um número'),
-        confirmSenhaUsuario: Yup.string().required('Confirme a senha')
-                    .oneOf([Yup.ref('senhaUsuario'), null], 'As senhas devem ser iguais')
+                    .max(8, 'A senha deve ter no máximo 8 caracteres'),
+                        
     });
 
 
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-
+    
         try {
-            await schema.validate({ nomeUsuario, sobrenomeUsuario, cpfUsuario, telUsuario, emailUsuario, senhaUsuario});
+            await schema.validate({ nomeUsuario, sobrenomeUsuario, cpfUsuario, telUsuario, emailUsuario, senhaUsuario}, { abortEarly: false });
+            setErrorNome('');
+            setErrorSobrenome('');
+            setErrorCpf('');
+            setErrorTel('');
+            setErrorEmail('');
+            setErrorSenha('');
         } catch (err) {
-            toast.error(err.errors[0])
+            err.inner.forEach((error) => {
+                switch (error.path) {
+                    case 'nomeUsuario':
+                        setErrorNome(error.message);
+                        break;
+                    case 'sobrenomeUsuario':
+                        setErrorSobrenome(error.message);
+                        break;
+                    case 'cpfUsuario':
+                        setErrorCpf(error.message);
+                        break;
+                    case 'telUsuario':
+                        setErrorTel(error.message);
+                        break;
+                    case 'emailUsuario':
+                        setErrorEmail(error.message);
+                        break;
+                    case 'senhaUsuario':
+                        setErrorSenha(error.message);
+                        break;
+                    default:   
+                }
+            });
+            console.error(err.errors[0]);
             return;
         }
+    
         try {
-            const response = await axios.post('https://oceandrones-spring.azurewebsites.net/usuarios/cadastrar', { nomeUsuario, sobrenomeUsuario, cpfUsuario, telUsuario, emailUsuario, senhaUsuario });
-                console.log(response.status.sucess);
-                if (response.status === 200) {
-                  toast.success('Cadastro realizado com sucesso!');
-                  setTimeout(() => {
+            const response = await axios.post('http://localhost:8080/usuarios/cadastrar',
+                { nomeUsuario, sobrenomeUsuario, cpfUsuario, telUsuario, emailUsuario, senhaUsuario });
+            console.log(response.status.sucess);
+            if (response.status === 200) {
+                setIsOpen(true);
+                setTimeout(() => {
                     navigate('/login');
                 }, 2000);
-              } else {
-                 toast.error('Não foi possível realizar o cadastro.');
-              }
+            } else {
+                toast.error('Não foi possível realizar o cadastro.');
+            }
         } catch (error) {
             toast.error('Não foi possível realizar o cadastro.');
         }
     };
-
+    
 
   return (
     <>
@@ -102,12 +128,14 @@ export default function Cadastro() {
                             </label>
                             <input
                                 type="text"
-                                name="nomeUsuario"
                                 id="nomeUsuario"
-                                autoComplete="given-name"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 value={nomeUsuario}
-                                onChange={(e) => setnomeUsuario(e.target.value)}/>
+                                onChange={(e) => {
+                                    setnomeUsuario(e.target.value);
+                                    setErrorNome('');}}/>
+                                {errorNome && <p style={{color: 'red', fontSize: '12px'}}>{errorNome}</p>}
+
                         </div>
 
                         <div className="sm:col-span-3">
@@ -117,12 +145,13 @@ export default function Cadastro() {
                             <div className="mt-2">
                                 <input
                                 type="text"
-                                name="sobrenomeUsuario"
                                 id="sobrenomeUsuario"
-                                autoComplete="family-name"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 value={sobrenomeUsuario}
-                                onChange={(e) => setsobrenomeUsuario(e.target.value)}/>
+                                onChange={(e) => {
+                                    setsobrenomeUsuario(e.target.value);
+                                    setErrorSobrenome('');}}/>
+                                {errorSobrenome && <p style={{color: 'red', fontSize: '12px'}}>{errorSobrenome}</p>}
                             </div>
                         </div>
 
@@ -133,13 +162,14 @@ export default function Cadastro() {
                             <div className="mt-2">
                                 <input
                                 type="text"
-                                name="cpfUsuario"
                                 id="cpfUsuario"
-                                autoComplete="cpfUsuario"
                                 placeholder='000.000.000-00'
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 value={cpfUsuario}
-                                onChange={(e) => setcpfUsuario(e.target.value)}/>
+                                onChange={(e) => {
+                                    setcpfUsuario(e.target.value);
+                                    setErrorCpf('');}}/>
+                                {errorCpf && <p style={{color: 'red', fontSize: '12px'}}>{errorCpf}</p>}
                             </div>
                         </div>
 
@@ -150,13 +180,14 @@ export default function Cadastro() {
                             <div className="mt-2">
                                 <input
                                 type="text"
-                                name="telUsuario"
                                 id="telUsuario"
-                                autoComplete="number"
                                 placeholder='(00) 00000-0000'
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 value={telUsuario}
-                                onChange={(e) => settelUsuario(e.target.value)}/>
+                                onChange={(e) => {
+                                    settelUsuario(e.target.value);
+                                    setErrorTel('');}}/>
+                                {errorTel && <p style={{color: 'red', fontSize: '12px'}}>{errorTel}</p>}
                             </div>
                         </div>
 
@@ -169,13 +200,14 @@ export default function Cadastro() {
                             <div className="mt-2">
                                 <input
                                 id="emailUsuario"
-                                name="emailUsuario"
                                 type="email"
-                                autoComplete="email"
                                 placeholder='seumelhoremail@gmail.com'
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 value={emailUsuario}
-                                onChange={(e) => setemailUsuario(e.target.value)}/>
+                                onChange={(e) => {
+                                    setemailUsuario(e.target.value);
+                                    setErrorEmail('');}}/>
+                                {errorEmail && <p style={{color: 'red', fontSize: '12px'}}>{errorEmail}</p>}
                             </div>
                         </div>
 
@@ -186,28 +218,16 @@ export default function Cadastro() {
                             <div className="mt-2">
                                 <input
                                 id="senhaUsuario"
-                                name="senhaUsuario"
                                 type="password"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 value={senhaUsuario}
-                                onChange={(e) => setsenhaUsuario(e.target.value)}/>
+                                onChange={(e) => {
+                                    setsenhaUsuario(e.target.value);
+                                    setErrorSenha('');}}/>
+                                {errorSenha && <p style={{color: 'red', fontSize: '12px'}}>{errorSenha}</p>}
                             </div>
                         </div>
 
-                        <div className="sm:col-span-4">
-                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                                Confirme sua senha
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                id="confirmSenhaUsuario"
-                                name="confirmSenhaUsuario"
-                                type="password"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                value={confirmSenhaUsuario}
-                                onChange={(e) => setconfirmSenhaUsuario(e.target.value)}/>
-                            </div>  
-                        </div>
 
                         <div className="flex space-x-4">
                             <button
@@ -227,6 +247,33 @@ export default function Cadastro() {
                     </form>
                 </div>
             </div>
+
+            {/* Modal de confirmação de cadastro */}
+            {isOpen && (
+
+                <div className="fixed inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black opacity-50"></div>
+                <Popup 
+                    open={isOpen} 
+                    closeOnDocumentClick 
+                    onClose={() => setIsOpen(false)}
+                    contentStyle={{
+                        width: '40%',
+                        borderRadius: '20px',
+                        padding: '20px',
+                    }}
+                    overlayStyle={{ background: 'rgba(0,0,0,0.5)' }}>
+                    <div className="bg-white rounded-lg p-5">
+                            <div className="bg-white rounded-lg p-5 flex flex-col items-center">
+                                <div className="background bg-green-500 rounded-full h-16 w-16 flex items-center justify-center">
+                                <FaCheck className='mx-auto'/>
+                                </div>
+                            </div>
+                        <h3 className="text-center text-lg font-bold text-gray-900 mt-4">Cadastro realizado com sucesso!</h3>
+                    </div>
+                </Popup>
+                </div>
+            )}
     </>
   )
 }
