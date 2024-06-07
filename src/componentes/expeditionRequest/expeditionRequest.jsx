@@ -9,7 +9,7 @@ import axios from 'axios';
 
 export default function ExpeditionRequest () {
   const navigate = useNavigate();
-  const [isOpenCheck, setisOpenCheck] = useState(true);
+  const [isOpenCheck, setisOpenCheck] = useState(false);
   const [isOpenError, setisOpenError] = useState(false);
   const [contador, setContador] = useState(Math.floor(Math.random() * (180 -60 + 1) + 60));
 
