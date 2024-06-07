@@ -56,7 +56,7 @@ const Login = () => {
 
 
             try {
-              const response = await axios.get('http://localhost:8080/usuarios/buscar', {
+              const response = await axios.get('https://oceandrones-weabpp-java.azurewebsites.net/usuarios/buscar', {
                 params: { email, password }});
                 console.log(response.status.sucess);
 

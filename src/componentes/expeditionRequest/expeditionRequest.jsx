@@ -165,7 +165,7 @@ export default function ExpeditionRequest () {
     }
 
     try {
-        const response = await axios.post('http://localhost:8080/expedicaodrones/cadastrar', {
+        const response = await axios.post('https://oceandrones-weabpp-java.azurewebsites.net/expedicaodrones/cadastrar', {
             drone: selectedDroneModel.value,
             ufEstado: selectedState.value,
             porto: selectedPorto.value,

@@ -86,7 +86,7 @@ export default function Cadastro() {
         }
     
         try {
-            const response = await axios.post('http://localhost:8080/usuarios/cadastrar',
+            const response = await axios.post('https://oceandrones-weabpp-java.azurewebsites.net/usuarios/cadastrar',
                 { nomeUsuario, sobrenomeUsuario, cpfUsuario, telUsuario, emailUsuario, senhaUsuario });
             console.log(response.status.sucess);
             if (response.status === 200) {
