@@ -114,11 +114,13 @@ export default function ExpeditionRequest () {
       newTrajetoOptions.push({ value: 'TRAJETOPORTORIOJANEIRO', label: 'Trajeto Rio de Janeiro' });
     } else if (selectedPorto?.value === 'PORTORIOGRANDE') {
       newTrajetoOptions.push({ value: 'TRAJETOPORTORIOGRANDE', label: 'Trajeto Rio Grande' });
-    } else if ((selectedPorto?.value === 'PORTOITAPOA') || (selectedPorto?.value === 'PORTONAVE')){
+    } else if (selectedPorto?.value === 'PORTOITAPOA'){
       newTrajetoOptions.push({ value: 'TRAJETOPORTOITAPOA', label: 'Trajeto Itapoá' });
-      newTrajetoOptions.push({ value: 'TRAJETOPORTONAVE', label: 'Trajeto Portonave' });
-    } else if ((selectedPorto?.value === 'PORTOSANTOS')  || (selectedPorto?.value === 'PORTOSAOSEBASTIAO')){
+    } else if (selectedPorto?.value === 'PORTONAVE'){
+      newTrajetoOptions.push({ value: 'TRAJETOPORTONAVE', label: 'Trajeto Portonave' })
+    } else if (selectedPorto?.value === 'PORTOSANTOS'){
       newTrajetoOptions.push({ value: 'TRAJETOPORTOSANTOS', label: 'Trajeto Santos' });
+    } else if (selectedPorto?.value === 'PORTOSAOSEBASTIAO'){
       newTrajetoOptions.push({ value: 'TRAJETOPORTOSAOSEBASTIAO', label: 'Trajeto São Sebastião' });
     }
     setTrajetoOptions(newTrajetoOptions);
@@ -159,26 +161,27 @@ export default function ExpeditionRequest () {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!selectedDroneModel || !selectedState || !selectedPorto || !selectedTrajeto) {
+    if (selectedDroneModel  === (null) || selectedState === (null)|| selectedPorto=== (null)|| selectedTrajeto === (null)) {
+      console.log(selectedDroneModel, selectedState, selectedPorto, selectedTrajeto)
         setisOpenError(true);
         return;
     }
 
     try {
         const response = await axios.post('https://oceandrones-weabpp-java.azurewebsites.net/expedicaodrones/cadastrar', {
-            drone: selectedDroneModel.value,
-            ufEstado: selectedState.value,
+            drones: selectedDroneModel.value,
+            ufExpedicao: selectedState.value,
             porto: selectedPorto.value,
             trajeto: selectedTrajeto.value
         });
 
         if (response.status === 200) {
+            setisOpenCheck(true);
             console.log(response.status)
             setTimeout(() => {
             }, 2000);
         } else {
             setisOpenError(true);
-            console.log(response.status)
         }
     } catch (error) {
         setisOpenError(true);
