@@ -7,6 +7,7 @@ import Login from './componentes/login/login';
 import Cadastro from './componentes/cadastro/cadastro';
 import Homeuser from './componentes/homeuser/homeuser';
 import ExpeditionRequest from './componentes/expeditionRequest/expeditionRequest';
+import RelatorioDadosExp from './componentes/relatorioDadosExpedicao/relatorioDadosExp';
 
 
 export default function App() {
@@ -38,6 +39,10 @@ export default function App() {
 
           <Route path='/expeditionrequest' element={<>
             <ExpeditionRequest />
+          </>} />
+
+          <Route path='/relatoriodadosexpedicao' element={<>
+            <RelatorioDadosExp/>
           </>} />
 
         </Routes>

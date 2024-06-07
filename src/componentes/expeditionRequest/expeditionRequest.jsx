@@ -1,39 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 import HeaderHomeUser from '../headerHomeUser/headerHomeUser';
+import Popup from 'reactjs-popup';
+import {FaCheck} from 'react-icons/fa';
+import {FaTimes} from 'react-icons/fa';
+import axios from 'axios';
 
 export default function ExpeditionRequest () {
+  const navigate = useNavigate();
+  const [isOpenCheck, setisOpenCheck] = useState(true);
+  const [isOpenError, setisOpenError] = useState(false);
+  const [contador, setContador] = useState(Math.floor(Math.random() * (180 -60 + 1) + 60));
 
   const droneModels = [
-    { value: 'Ibubble - Capacidade mergulho 60m, sem fio, controle remoto, bateria 1h, dimensões 60cm x 45cm 35cm',
+    { value: 'IBUBBLE',
       label: 'Ibubble - Capacidade mergulho 60m, sem fio, controle remoto, bateria 1h, dimensões 60cm x 45cm 35cm',
       img : '/imgs/ibubble_drone.png'},
 
-    { value: 'DTG3 Rov - Capacidade mergulho 200m, com fio, bateria 12h',
+    { value: 'DTG3ROV',
       label: 'DTG3 Rov - Capacidade mergulho 200m, com fio, bateria 12h',
       img : '/imgs/dtg3rov_drone.png'},
 
-    { value: 'Gladius Mini - Capacidade mergulho 100m, sem fio, controle remoto, bateria 2h, dimensões 385 x 226 x 138mm',
+    { value: 'GLADIUSMINI',
       label: 'Gladius Mini - Capacidade mergulho 100m, sem fio, controle remoto, bateria 2h, dimensões 385 x 226 x 138mm',
       img : '/imgs/gladius_mini.png'},
 
-    { value: 'PowerRay - Capacidade mergulho 30m, com fio, controle remoto, bateria 4h, dimensões 465 x 270 x 126mm',
+    { value: 'POWERRAY',
       label: 'PowerRay - Capacidade mergulho 30m, com fio, controle remoto, bateria 4h, dimensões 465 x 270 x 126mm',
       img : '/imgs/powerray_drone.png'},
 
-    { value: 'Titan Geneinno - Capacidade mergulho 150m, com/sem fio, controle remoto, qualidade img 4k, dimensões 90 x 374 x 165',
+    { value: 'TITANGENEINNO',
       label: 'Titan Geneinno - Capacidade mergulho 150m, com/sem fio, controle remoto, qualidade img 4k, dimensões 90 x 374 x 165',
       img : '/imgs/titan_geneinno.png'},
   ];
 
   const stateOption = [
-    { value: 'AM - Amazonas', label: 'AM - Amazonas' },
-    { value: 'PR - Paraná', label: 'PR - Paraná' },
-    { value: 'PE - Pernambuco', label: 'PE - Pernambuco' },
-    { value: 'RJ - Rio de Janeiro', label: 'RJ - Rio de Janeiro' },
-    { value: 'RS - Rio Grande do Sul', label: 'RS - Rio Grande do Sul' },
-    { value: 'SC - Santa Catarina', label: 'SC - Santa Catarina' },
-    { value: 'SP - São Paulo', label: 'SP - São Paulo' },
+    { value: 'AM', label: 'AM - Amazonas' },
+    { value: 'PR', label: 'PR - Paraná' },
+    { value: 'PE', label: 'PE - Pernambuco' },
+    { value: 'RJ', label: 'RJ - Rio de Janeiro' },
+    { value: 'RS', label: 'RS - Rio Grande do Sul' },
+    { value: 'SC', label: 'SC - Santa Catarina' },
+    { value: 'SP', label: 'SP - São Paulo' },
   ];
 
 
@@ -66,34 +75,116 @@ export default function ExpeditionRequest () {
   };
 
 
+  //PORTOS
   useEffect(() => {
     let newPortoOptions = [];
   
-    if (selectedState?.value === 'AM - Amazonas') {
-      newPortoOptions.push({ value: 'Porto Chibatão', label: 'Porto Chibatão' });
-    } else if (selectedState?.value === 'PR - Paraná') {
-      newPortoOptions.push({ value: 'Porto de Paranaguá', label: 'Porto de Paranaguá' });
-    } else if (selectedState?.value === 'PE - Pernambuco') {
-      newPortoOptions.push({ value: 'Porto de Suape', label: 'Porto de Suape' });
-    } else if (selectedState?.value === 'RJ - Rio de Janeiro') {
-      newPortoOptions.push({ value: 'Porto do Rio de Janeiro', label: 'Porto do Rio de Janeiro' });
-    } else if (selectedState?.value === 'RS - Rio Grande do Sul') {
-      newPortoOptions.push({ value: 'Porto de Rio Grande', label: 'Porto de Rio Grande' });
-    } else if (selectedState?.value === 'SC - Santa Catarina') {
-      newPortoOptions.push({ value: 'Porto de Itapoá', label: 'Porto de Itapoá' });
-      newPortoOptions.push({ value: 'Portonave', label: 'Portonave' });
-    } else if (selectedState?.value === 'SP - São Paulo') {
-      newPortoOptions.push({ value: 'Porto de Santos', label: 'Porto de Santos' });
-      newPortoOptions.push({ value: 'Porto de São Sebastião', label: 'Porto de São Sebastião' });
+    if (selectedState?.value === 'AM') {
+      newPortoOptions.push({ value: 'PORTOCHIBATAO', label: 'Porto Chibatão' });
+    } else if (selectedState?.value === 'PR') {
+      newPortoOptions.push({ value: 'PORTOPARANAGUA', label: 'Porto de Paranaguá' });
+    } else if (selectedState?.value === 'PE') {
+      newPortoOptions.push({ value: 'PORTOSUAPE', label: 'Porto de Suape' });
+    } else if (selectedState?.value === 'RJ') {
+      newPortoOptions.push({ value: 'PORTORIOJANEIRO', label: 'Porto do Rio de Janeiro' });
+    } else if (selectedState?.value === 'RS') {
+      newPortoOptions.push({ value: 'PORTORIOGRANDE', label: 'Porto de Rio Grande' });
+    } else if (selectedState?.value === 'SC') {
+      newPortoOptions.push({ value: 'PORTOITAPOA', label: 'Porto de Itapoá' });
+      newPortoOptions.push({ value: 'PORTONAVE', label: 'Portonave' });
+    } else if (selectedState?.value === 'SP') {
+      newPortoOptions.push({ value: 'PORTOSANTOS', label: 'Porto de Santos' });
+      newPortoOptions.push({ value: 'PORTOSAOSEBASTIAO', label: 'Porto de São Sebastião' });
     }
     setPortoOptions(newPortoOptions);
   }, [selectedState]);
+
+
+  //TRAJETOS
+  useEffect(() => {
+    let newTrajetoOptions = [];
+  
+    if (selectedPorto?.value === 'PORTOCHIBATAO') {
+      newTrajetoOptions.push({ value: 'TRAJETOPORTOCHIBATAO', label: 'Trajeto Chibatão' });
+    } else if (selectedPorto?.value === 'PORTOPARANAGUA') {
+      newTrajetoOptions.push({ value: 'TRAJETOPORTOPARANAGUA', label: 'Trajeto Paranaguá' });
+    } else if (selectedPorto?.value === 'PORTOSUAPE') {
+      newTrajetoOptions.push({ value: 'TRAJETOPORTOSUAPE', label: 'Trajeto Suape' });
+    } else if (selectedPorto?.value === 'PORTORIOJANEIRO') {
+      newTrajetoOptions.push({ value: 'TRAJETOPORTORIOJANEIRO', label: 'Trajeto Rio de Janeiro' });
+    } else if (selectedPorto?.value === 'PORTORIOGRANDE') {
+      newTrajetoOptions.push({ value: 'TRAJETOPORTORIOGRANDE', label: 'Trajeto Rio Grande' });
+    } else if ((selectedPorto?.value === 'PORTOITAPOA') || (selectedPorto?.value === 'PORTONAVE')){
+      newTrajetoOptions.push({ value: 'TRAJETOPORTOITAPOA', label: 'Trajeto Itapoá' });
+      newTrajetoOptions.push({ value: 'TRAJETOPORTONAVE', label: 'Trajeto Portonave' });
+    } else if ((selectedPorto?.value === 'PORTOSANTOS')  || (selectedPorto?.value === 'PORTOSAOSEBASTIAO')){
+      newTrajetoOptions.push({ value: 'TRAJETOPORTOSANTOS', label: 'Trajeto Santos' });
+      newTrajetoOptions.push({ value: 'TRAJETOPORTOSAOSEBASTIAO', label: 'Trajeto São Sebastião' });
+    }
+    setTrajetoOptions(newTrajetoOptions);
+  }, [selectedPorto]);
+
+  useEffect(() => {
+    setSelectedPorto(null);
+    setSelectedTrajeto(null);
+  }, [selectedState]);
+
   
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Aqui você pode lidar com o envio do formulário
+  //MODAL COUNTER
+  useEffect(() => {
+    let intervalo;
+    if(isOpenCheck && contador > 0){
+      intervalo = setInterval(() => {
+        setContador(contador - 1);
+      }, 1000);
+    } else if (contador === 0){
+      setisOpenCheck(false);
+      navigate('/relatoriodadosexpedicao');
+    }
+    return () => clearInterval(intervalo);
+  }, [isOpenCheck, contador, navigate]);
+
+  const formatarContador = (contador) => {
+    if (contador < 60) {
+      return `${contador} segundos...`;
+    } else {
+      const minutos = Math.floor(contador / 60);
+      const segundosRestantes = contador % 60;
+      return `${minutos}:${segundosRestantes.toString().padStart(2, '0')}`;
+    }
   };
+  
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!selectedDroneModel || !selectedState || !selectedPorto || !selectedTrajeto) {
+        setisOpenError(true);
+        return;
+    }
+
+    try {
+        const response = await axios.post('http://localhost:8080/expedicaodrones/cadastrar', {
+            drone: selectedDroneModel.value,
+            ufEstado: selectedState.value,
+            porto: selectedPorto.value,
+            trajeto: selectedTrajeto.value
+        });
+
+        if (response.status === 200) {
+            console.log(response.status)
+            setTimeout(() => {
+            }, 2000);
+        } else {
+            setisOpenError(true);
+            console.log(response.status)
+        }
+    } catch (error) {
+        setisOpenError(true);
+    }
+};
+
 
   return (
     <>
@@ -152,6 +243,62 @@ export default function ExpeditionRequest () {
           <button type="submit" className="bg-blue-500 text-white rounded p-2">Enviar requisição</button>
         </form>
       </div>
+
+
+      {/* Modal de confirmação de cadastro */}
+      {isOpenCheck && (
+          <div className="fixed inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black opacity-50"></div>
+            <Popup 
+                open={isOpenCheck} 
+                closeOnDocumentClick={false}
+                onClose={() => setisOpenCheck(false)}
+                contentStyle={{
+                    width: '40%',
+                    borderRadius: '20px',
+                    padding: '20px',
+                }}
+                overlayStyle={{ background: 'rgba(0,0,0,0.5)' }}>
+                <div className="bg-white rounded-lg p-5 fle">
+                    <div className="bg-white rounded-lg p-5 flex flex-col items-center">
+                        <div className="background bg-green-500 rounded-full h-16 w-16 flex items-center justify-center">
+                          <FaCheck className='mx-auto'/>
+                        </div>
+                        </div>
+                          <h3 className="text-center text-lg font-bold text-gray-900 mt-4">Requisição cadastrada com sucesso!</h3>
+                          <p className="text-center mt-4">Aguarde, a requisição está sendo gerada e<br>
+                                                      </br>após a conclusão será gerado o relatório da expedição.<br>
+                                                      </br>{formatarContador(contador)}...</p>
+                      </div>
+            </Popup>
+          </div>
+          )}
+
+      {/* Modal de confirmação de cadastro */}
+      {isOpenError && (
+          <div className="fixed inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black opacity-50"></div>
+            <Popup 
+                open={isOpenError} 
+                closeOnDocumentClick 
+                onClose={() => setisOpenError(false)}
+                contentStyle={{
+                    width: '40%',
+                    borderRadius: '20px',
+                    padding: '20px',
+                }}
+                overlayStyle={{ background: 'rgba(0,0,0,0.5)' }}>
+                <div className="bg-white rounded-lg p-5 fle">
+                    <div className="bg-white rounded-lg p-5 flex flex-col items-center">
+                        <div className="background bg-red-500 rounded-full h-16 w-16 flex items-center justify-center">
+                          <FaTimes className='mx-auto'/>
+                        </div>
+                    </div>
+                    <h3 className="text-center text-lg font-bold text-gray-900 mt-4">Por favor, preencha todos os campos.</h3>
+                </div>
+            </Popup>
+          </div>
+          )}
 
 
     </>
