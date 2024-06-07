@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -6,9 +6,11 @@ import Home from './componentes/home/home';
 import Login from './componentes/login/login';
 import Cadastro from './componentes/cadastro/cadastro';
 import Homeuser from './componentes/homeuser/homeuser';
+import ExpeditionRequest from './componentes/expeditionRequest/expeditionRequest';
 
 
 export default function App() {
+
   return (
     <BrowserRouter>
       <div className='tudo'>
@@ -23,8 +25,8 @@ export default function App() {
           </>} />
 
           <Route path='/login' element={<>
-            <Login />
-          </>} />
+              <Login />
+          </>}/>
 
           <Route path='/cadastro' element={<>
             <Cadastro />
@@ -32,6 +34,10 @@ export default function App() {
 
           <Route path='/homeuser' element={<>
             <Homeuser />
+          </>} />
+
+          <Route path='/expeditionrequest' element={<>
+            <ExpeditionRequest />
           </>} />
 
         </Routes>

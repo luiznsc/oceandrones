@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -7,10 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from '../header/header';
 import Popup from 'reactjs-popup';
 import {FaCheck} from 'react-icons/fa';
+import {FaTimes} from 'react-icons/fa';
+
 
 const Login = () => {
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenCheck, setisOpenCheck] = useState(false);
+    const [isOpenError, setisOpenError] = useState(false);
 
     const [email, setemail] = useState('');
     const [password, setpassword] = useState('');
@@ -26,50 +29,51 @@ const Login = () => {
         password: Yup.string().required('Informe a senha.'),
     });
 
-    const handleFormSubmit = async (event) => {
-        event.preventDefault();
-        setError(null); // Reseta o estado de erro ao submeter o formulário
-    
-        try {
-            await schema.validate({ email, password }, { abortEarly: false });
-              setErrorEmail('');
-              setErrorPassword('');
-        } catch (err){
-            err.inner.forEach((error) => {
-              switch (error.path) {
-                  case 'email':
-                      setErrorEmail(error.message);
-                      break;
-                  case 'password':
-                      setErrorPassword(error.message);
-                      break;
-                  default:
-              }
-            });
-              console.error(err.errors[0]);
-              return;
-          }
 
-
+      const handleFormSubmit = async (event) => {
+          event.preventDefault();
+          setError(null); // Reseta o estado de erro ao submeter o formulário
+      
           try {
-            const response = await axios.get('http://localhost:8080/usuarios/buscar', {
-              params: { email, password }});
-              console.log(response.status.sucess);
-
-            if (response.status === 200) {
-                setIsOpen(true);
-                setTimeout(() => {
-                    navigate('/homeuser');
-                }, 2000);
-            } else {
-                toast.error('Não foi possível realizar o login.');
+              await schema.validate({ email, password }, { abortEarly: false });
+                setErrorEmail('');
+                setErrorPassword('');
+          } catch (err){
+              err.inner.forEach((error) => {
+                switch (error.path) {
+                    case 'email':
+                        setErrorEmail(error.message);
+                        break;
+                    case 'password':
+                        setErrorPassword(error.message);
+                        break;
+                    default:
+                }
+              });
+                console.error(err.errors[0]);
+                return;
             }
 
-        } catch (error) {
-            toast.error('Não foi possível realizar o login.');
-        }
 
-    };
+            try {
+              const response = await axios.get('http://localhost:8080/usuarios/buscar', {
+                params: { email, password }});
+                console.log(response.status.sucess);
+
+              if (response.status === 200) {
+                  setisOpenCheck(true);
+                  setTimeout(() => {
+                      navigate('/homeuser');
+                  }, 2000);
+              } else {
+                  setisOpenError(true);
+              }
+
+          } catch (error) {
+              setisOpenError(true);
+          }
+
+      };
     return (
       <>
         <Header></Header>
@@ -151,13 +155,13 @@ const Login = () => {
         </div>
 
       {/* Modal de confirmação de cadastro */}
-      {isOpen && (
+      {isOpenCheck && (
           <div className="fixed inset-0 flex items-center justify-center">
             <div className="absolute inset-0 bg-black opacity-50"></div>
             <Popup 
-                open={isOpen} 
+                open={isOpenCheck} 
                 closeOnDocumentClick 
-                onClose={() => setIsOpen(false)}
+                onClose={() => setisOpenCheck(false)}
                 contentStyle={{
                     width: '40%',
                     borderRadius: '20px',
@@ -171,6 +175,32 @@ const Login = () => {
                         </div>
                     </div>
                     <h3 className="text-center text-lg font-bold text-gray-900 mt-4">Login realizado com sucesso!</h3>
+                </div>
+            </Popup>
+          </div>
+          )}
+
+                {/* Modal de confirmação de cadastro */}
+      {isOpenError && (
+          <div className="fixed inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black opacity-50"></div>
+            <Popup 
+                open={isOpenError} 
+                closeOnDocumentClick 
+                onClose={() => setisOpenError(false)}
+                contentStyle={{
+                    width: '40%',
+                    borderRadius: '20px',
+                    padding: '20px',
+                }}
+                overlayStyle={{ background: 'rgba(0,0,0,0.5)' }}>
+                <div className="bg-white rounded-lg p-5 fle">
+                    <div className="bg-white rounded-lg p-5 flex flex-col items-center">
+                        <div className="background bg-red-500 rounded-full h-16 w-16 flex items-center justify-center">
+                          <FaTimes className='mx-auto'/>
+                        </div>
+                    </div>
+                    <h3 className="text-center text-lg font-bold text-gray-900 mt-4">Dados incorretos!</h3>
                 </div>
             </Popup>
           </div>
