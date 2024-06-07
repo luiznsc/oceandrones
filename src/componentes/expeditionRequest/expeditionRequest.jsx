@@ -140,7 +140,7 @@ export default function ExpeditionRequest () {
       }, 1000);
     } else if (contador === 0){
       setisOpenCheck(false);
-      navigate('/relatoriodadosexpedicao');
+      navigate('/homeuser');
     }
     return () => clearInterval(intervalo);
   }, [isOpenCheck, contador, navigate]);
@@ -267,7 +267,7 @@ export default function ExpeditionRequest () {
                         </div>
                           <h3 className="text-center text-lg font-bold text-gray-900 mt-4">Requisição cadastrada com sucesso!</h3>
                           <p className="text-center mt-4">Aguarde, a requisição está sendo gerada e<br>
-                                                      </br>após a conclusão será gerado o relatório da expedição.<br>
+                                                      </br>após a conclusão será enviado ao seu e-mail.<br>
                                                       </br>{formatarContador(contador)}...</p>
                       </div>
             </Popup>
